@@ -1,0 +1,18 @@
+Structure Generation Algorithm
+
+>1. Choose 10 random bricks (with weighted randomness factor)
+>2. Choose 1 of those and place it down in the structure.
+>3. Foreach other brick:
+>  a. Choose which already-placed brick to attach it to.
+>  b. Choose whether to attach to the top or bottom.
+>  c. Choose which stud on that face to attach to.
+>  d. Choose which direction to place brick.
+>  e. Record connection(s).
+>  [At any point, if cannot place piece there, move back a step]
+4. Go through each connection. Figure out the top-down view of the instruction.
+5. Randomize order of the instruction pages.
+6. Make it look nice on module.
+
+
+
+MAKE LIST OF ALL OPTION, GO THROUGH, SKIP ONES YOU CANT DO
