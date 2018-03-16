@@ -466,7 +466,7 @@ public static class HelperExtensions {
         switch(direction) {
             case 0:
                 return data;
-            case 3:
+            case 1:
                 for (int i = 0; i < data.Length; i++) {
                     result[i] = data[dimX - 1 - (i / dimX) + (i % dimX) * dimX];
                 }
@@ -476,7 +476,7 @@ public static class HelperExtensions {
                     result[i] = data[dimX - 1 - (i % dimX) + (dimY - 1 - (i / dimX)) * dimX];
                 }
                 return result;
-            case 1:
+            case 3:
                 for (int i = 0; i < data.Length; i++) {
                     result[i] = data[(i / dimX) + (dimX - 1 - (i % dimX)) * dimX];
                 }

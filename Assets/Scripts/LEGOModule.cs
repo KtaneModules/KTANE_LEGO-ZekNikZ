@@ -121,6 +121,13 @@ public class LEGOModule : MonoBehaviour {
         } else {
             SolutionRotation = Direction.NORTH;
         }
+        if (SolutionFace == 0) {
+            if (SolutionRotation == Direction.EAST) {
+                SolutionRotation = Direction.WEST;
+            } else if (SolutionRotation == Direction.WEST) {
+                SolutionRotation = Direction.EAST;
+            }
+        }
         SolutionDisplay = gen.GetSolutionDisplay(SolutionFace).Rotate((int)SolutionRotation, 8, 8);
         Debug.LogFormat("[LEGO #{0}] Solution:\n{1}", ModuleID, string.Join("\n", string.Join("", SolutionDisplay.Select(x=>ColorSymbols[x]).ToArray()).SplitInGroups(8).Reverse().ToArray()));
 
@@ -138,6 +145,7 @@ public class LEGOModule : MonoBehaviour {
     // Interaction Handlers
 
     private void HandleGridPress(int button) {
+        SubmitButton.AddInteractionPunch(0.2f);
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, SubmitButton.transform);
         if (CurrentPage == MaxPages - 1) {
             if (Submission[button] == CurrentColor) {
@@ -151,6 +159,7 @@ public class LEGOModule : MonoBehaviour {
     }
 
     private void HandleColorPress(int button) {
+        SubmitButton.AddInteractionPunch(0.2f);
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, SubmitButton.transform);
         //Debug.LogFormat("[LEGO #{0}] Current color changed to {1}.", ModuleID, Colors[button + 1].name);
         CurrentColor = button + 1;
@@ -162,6 +171,7 @@ public class LEGOModule : MonoBehaviour {
     }
 
     private void HandlePageTurnPress(int direction) {
+        SubmitButton.AddInteractionPunch(0.5f);
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, SubmitButton.transform);
         if (direction == 0) {
             if (CurrentPage > 0) CurrentPage--;
@@ -174,6 +184,7 @@ public class LEGOModule : MonoBehaviour {
     }
 
     private void HandleSubmit() {
+        SubmitButton.AddInteractionPunch();
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, SubmitButton.transform);
         int[] grid = ShiftGrid(Submission);
         int[] solution = ShiftGrid(SolutionDisplay);
