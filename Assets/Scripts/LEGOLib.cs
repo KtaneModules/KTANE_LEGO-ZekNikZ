@@ -287,9 +287,13 @@ namespace LEGO {
                     PieceOptions.Add(i);
                 }
             }
+
+            List<int> randomColors = HelperExtensions.IntRangeList(0, 10);
+            randomColors.Shuffle();
+
             for (int i = 0; i < PieceCount; i++) {
                 int pieceNum = PieceOptions[Random.Range(0, PieceOptions.Count)];
-                Pieces.Add(new Brick(PieceTypes[pieceNum][1], PieceTypes[pieceNum][2], i));
+                Pieces.Add(new Brick(PieceTypes[pieceNum][1], PieceTypes[pieceNum][2], randomColors[i]));
             }
 
             // STEP 2: Randomize Brick Order and Place Starting Brick
@@ -316,6 +320,7 @@ namespace LEGO {
                             for (int n_direction = 0; n_direction < 4; n_direction++) {
                                 try {
                                     int[][] bounds = brick.GetBounds();
+                                    // TODO: Check if bounds are same as another
                                     if (brick.Facing == Direction.NORTH || brick.Facing == Direction.SOUTH) {
                                         result.AddBrick(Pieces[currentBrick], bounds[0][0] + studs[n_stud] % brick.Dimensions[0], bounds[0][1] + studs[n_stud] / brick.Dimensions[0], brick.Position[2] + 2 * n_face - 1, (Direction)directions[n_direction]);
                                     } else {
@@ -376,7 +381,8 @@ namespace LEGO {
             List<int[]> result = new List<int[]>();
 
             foreach (Brick piece in ResultStructure.Pieces.OrderBy(x => x.BrickID)) {
-                int[] grid = new int[Dimensions[0] * Dimensions[1]];
+            //foreach (Brick piece in ResultStructure.Pieces.OrderBy(x => x.BrickColor)) {
+            int[] grid = new int[Dimensions[0] * Dimensions[1]];
                 int[][] pieceBounds = piece.GetBounds();
                 int minX = pieceBounds[0][0];
                 int minY = pieceBounds[0][1];

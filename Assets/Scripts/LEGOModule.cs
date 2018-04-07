@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using LEGO;
 using KMBombInfoExtensions;
+using Newtonsoft.Json;
 
 public class LEGOModule : MonoBehaviour {
     // KTANE Hooks
     public KMBombInfo BombInfo;
     public KMBombModule BombModule;
     public KMAudio Audio;
+    public KMModSettings ModSettings;
 
     // Module Hooks
     public KMSelectable[] GridButtons;
@@ -39,15 +41,27 @@ public class LEGOModule : MonoBehaviour {
     private int CurrentColor;
 
     // Controller Field to Enable/Disable Rotations of Pages
-    private bool ROTATIONS_ENABLED = true;
+    private bool PAGE_ROTATIONS_ENABLED = false;
+    private bool SOLUTION_TRANSFORMATIONS_ENABLED = true;
 
     // Logging Fields
     private static int ModuleIDCounter = 1;
     private int ModuleID;
 
+    class Settings {
+        public bool pageRotationsEnabled;
+        public bool solutionTransformationsEnabled;
+    }
+    Settings modSettings;
+
     // Setup Methods
 
     private void Start() {
+        modSettings = JsonConvert.DeserializeObject<Settings>(ModSettings.Settings);
+
+        PAGE_ROTATIONS_ENABLED = modSettings.pageRotationsEnabled;
+        SOLUTION_TRANSFORMATIONS_ENABLED = modSettings.solutionTransformationsEnabled;
+
         // Initialize Independent Variables
         Submission = new int[GridButtons.Length];
         PageDisplayTimer = Time.time;
@@ -78,10 +92,11 @@ public class LEGOModule : MonoBehaviour {
             Debug.LogFormat("[LEGO #{0}] Piece #{1}: Position: ({2}, {3}, {4}), Dimensions: {5}x{6}, Rotation: {7}, Color: {8}", ModuleID, i, piece.Position[0], piece.Position[1], piece.Position[2], piece.Dimensions[0], piece.Dimensions[1], piece.Facing, Colors[piece.BrickColor + 1].name);
         }
 
-        Debug.LogFormat("[LEGO #{0}] Instruction and Solution Rotations are {1}.", ModuleID, ROTATIONS_ENABLED ? "enabled" : "disabled");
+        Debug.LogFormat("[LEGO #{0}] Instruction Rotations are {1}.", ModuleID, PAGE_ROTATIONS_ENABLED ? "enabled" : "disabled");
+        Debug.LogFormat("[LEGO #{0}] Solution Rotations are {1}.", ModuleID, SOLUTION_TRANSFORMATIONS_ENABLED ? "enabled" : "disabled");
 
         // Setup Instruction Pages
-        if (ROTATIONS_ENABLED) {
+        if (PAGE_ROTATIONS_ENABLED) {
             PageRotations = new Direction[] {
                 BombInfo.IsIndicatorOn(Indicator.NSA) ? Direction.NORTH : Direction.SOUTH,
                 BombInfo.GetSerialNumberLetters().Any(x => "AEIOU".Contains(x)) ? Direction.EAST : Direction.WEST,
@@ -98,13 +113,13 @@ public class LEGOModule : MonoBehaviour {
 
             SolutionManualPages = gen.GetManualPages(true).AsEnumerable().Select((x, i) => x.Rotate((int)PageRotations[i % 10], 8, 8)).ToList();
             SolutionManualPagesBottomOnly = gen.GetManualPages(false).AsEnumerable().Select((x, i) => x.Rotate((int)PageRotations[i % 10], 8, 8)).ToList();
-            for(int i = 0; i < SolutionManualPages.Count; i++) {
-                Debug.LogFormat("[LEGO #{0}] Manual Page {1} w/ top:\n{2}", ModuleID, i + 1, string.Join("\n", string.Join("", SolutionManualPages[i].Select(x => ColorSymbols[x]).ToArray()).SplitInGroups(8).Reverse().ToArray()));
-                Debug.LogFormat("[LEGO #{0}] Manual Page {1} w/o top:\n{2}", ModuleID, i + 1, string.Join("\n", string.Join("", SolutionManualPagesBottomOnly[i].Select(x => ColorSymbols[x]).ToArray()).SplitInGroups(8).Reverse().ToArray()));
-            }
         } else {
             SolutionManualPages = gen.GetManualPages(true);
             SolutionManualPagesBottomOnly = gen.GetManualPages(false);
+        }
+        for (int i = 0; i < SolutionManualPages.Count; i++) {
+            Debug.LogFormat("[LEGO #{0}] Manual Page {1} w/ top:\n{2}", ModuleID, i + 1, string.Join("\n", string.Join("", SolutionManualPages[i].Select(x => ColorSymbols[x]).ToArray()).SplitInGroups(8).Reverse().ToArray()));
+            Debug.LogFormat("[LEGO #{0}] Manual Page {1} w/o top:\n{2}", ModuleID, i + 1, string.Join("\n", string.Join("", SolutionManualPagesBottomOnly[i].Select(x => ColorSymbols[x]).ToArray()).SplitInGroups(8).Reverse().ToArray()));
         }
 
         // Setup Solution
@@ -113,7 +128,7 @@ public class LEGOModule : MonoBehaviour {
                        yellowPiece.Dimensions[0] * yellowPiece.Dimensions[1] == 3 ? 0 :
                        SolutionManualPages.Count > 9 ? 1 : 0;
         Debug.LogFormat("[LEGO #{0}] Solution Face: {1}", ModuleID, SolutionFace == 0 ? "BOTTOM" : "TOP");
-        if (ROTATIONS_ENABLED) {
+        if (SOLUTION_TRANSFORMATIONS_ENABLED) {
             SolutionRotation = SolutionStructure.Pieces.Find(x => x.BrickColor == 1).Dimensions.SequenceEqual(SolutionStructure.Pieces.Find(x => x.BrickColor == 4).Dimensions) ? Direction.WEST :
                                SolutionStructure.Pieces.Max(x => x.Position[2]) > 2 ? Direction.NORTH :
                                SolutionStructure.Pieces.Find(x => x.BrickColor == 6).Position[2] > SolutionStructure.Pieces.Find(x => x.BrickColor == 0).Position[2] ? Direction.EAST : Direction.SOUTH;
@@ -145,7 +160,7 @@ public class LEGOModule : MonoBehaviour {
     // Interaction Handlers
 
     private void HandleGridPress(int button) {
-        SubmitButton.AddInteractionPunch(0.2f);
+        SubmitButton.AddInteractionPunch(0.1f);
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, SubmitButton.transform);
         if (CurrentPage == MaxPages - 1) {
             if (Submission[button] == CurrentColor) {

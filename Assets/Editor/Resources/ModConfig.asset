@@ -13,9 +13,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: LEGOMod
   title: LEGOs
-  description: "This is a BETA build of the LEGO module. If you find any bugs or have
-    any questions or comment, please let me know at @ZekNikZ\r#0878 on Discord.\n\nManuals:\nHTML:
-    https://zeknikzmodules.github.io/LEGO\nPDF: https://zeknikzmodules.github.io/LEGO.pdf"
-  version: 0.1
+  description: "Right now, the module is quite difficult. I would love to hear your
+    suggestions!! If you find any bugs or have any questions or comments, please let
+    me know at @ZekNikZ#0878 on Discord.\r\n\r\nModule ID: LEGOModule\r\n\r\nManuals:\r\nHTML:
+    https://zeknikzmodules.github.io/LEGO.html\r\nPDF: https://zeknikzmodules.github.io/LEGO.pdf\r\n\r\nPlease
+    note that there are two versions of this module, one with page rotations and one
+    without. The above manual links are for the version without page rotations. Here
+    are the links for the former:\r\nHTML: https://zeknikzmodules.github.io/LEGO_v1.html\r\nPDF:
+    https://zeknikzmodules.github.io/LEGO_v1.pdf\r\n\r\nTo enable this harder mode,
+    go to your ModSettings folder and change the LEGO setting for \"pageRotationsEnabled\"."
+  version: 1.1
   outputFolder: build
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 2800000, guid: ecd7fccff77c4ad4588139083a22d271, type: 3}

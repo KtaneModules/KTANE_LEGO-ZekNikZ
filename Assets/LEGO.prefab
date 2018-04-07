@@ -2515,6 +2515,7 @@ GameObject:
   - component: {fileID: 114997242771052658}
   - component: {fileID: 114978058649216894}
   - component: {fileID: 114481694563124222}
+  - component: {fileID: 114389003037378654}
   m_Layer: 0
   m_Name: LEGO
   m_TagString: Untagged
@@ -11103,6 +11104,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
   OutlineAmount: 0
+--- !u!114 &114389003037378654
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1863797252475358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -289456416, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Settings: '{"pageRotationsEnabled": false, "solutionTransformationsEnabled": true}'
+  SettingsPath: LEGOMod-settings.txt
 --- !u!114 &114389136305284452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11479,6 +11493,7 @@ MonoBehaviour:
   BombInfo: {fileID: 114997242771052658}
   BombModule: {fileID: 114690647574238776}
   Audio: {fileID: 114978058649216894}
+  ModSettings: {fileID: 114389003037378654}
   GridButtons:
   - {fileID: 114459522708183182}
   - {fileID: 114742370816809084}
