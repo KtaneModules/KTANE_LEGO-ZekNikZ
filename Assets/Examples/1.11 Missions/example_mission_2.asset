@@ -18,13 +18,15 @@ MonoBehaviour:
     TimeLimit: 240
     NumStrikes: 1
     TimeBeforeNeedyActivation: 5
+    FrontFaceOnly: 0
+    OptionalWidgetCount: 5
     ComponentPools:
-    - Count: 5
+    - Count: 1
       AllowedSources: 1
       ComponentTypes: 
       SpecialComponentType: 1
       ModTypes: []
-    - Count: 2
+    - Count: 1
       AllowedSources: 2
       ComponentTypes: 0d000000
       SpecialComponentType: 0

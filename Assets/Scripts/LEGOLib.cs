@@ -136,6 +136,31 @@ namespace LEGO {
             // Check if piece can be placed here.
             int[][] bounds = brick.GetBounds();
             Rect brickRect = brick.GetRect();
+
+            // Check for piece overlap.
+            if (position[2] + 1 < Layers.Length) {
+                foreach (Brick other in Layers[position[2] + 1]) {
+                    int[][] pieceBounds = other.GetBounds();
+                    if (bounds[0][0] == pieceBounds[0][0] &&
+                        bounds[0][1] == pieceBounds[0][1] &&
+                        bounds[1][0] == pieceBounds[1][0] &&
+                        bounds[1][1] == pieceBounds[1][1]) {
+                        throw new Exception("Cannot place brick there. Overlaping Manual Page.");
+                    }
+                }
+            }
+            if (position[2] - 1 >= 0) {
+                foreach (Brick other in Layers[position[2] - 1]) {
+                    int[][] pieceBounds = other.GetBounds();
+                    if (bounds[0][0] == pieceBounds[0][0] &&
+                        bounds[0][1] == pieceBounds[0][1] &&
+                        bounds[1][0] == pieceBounds[1][0] &&
+                        bounds[1][1] == pieceBounds[1][1]) {
+                        throw new Exception("Cannot place brick there. Overlaping Manual Page.");
+                    }
+                }
+            }
+
             foreach (Brick other in Layers[position[2]]) {
                 if (brickRect.Overlaps(other.GetRect())) throw new Exception("Cannot place brick there. Collision.");
             }
@@ -288,8 +313,9 @@ namespace LEGO {
                 }
             }
 
-            List<int> randomColors = HelperExtensions.IntRangeList(0, 10);
-            randomColors.Shuffle();
+            // List<int> randomColors = HelperExtensions.IntRangeList(0, 10); // [OLD VERSION]
+            List<int> randomColors = HelperExtensions.IntRangeList(0, PieceCount);
+            // randomColors.Shuffle(); // [OLD VERSION]
 
             for (int i = 0; i < PieceCount; i++) {
                 int pieceNum = PieceOptions[Random.Range(0, PieceOptions.Count)];
@@ -320,7 +346,7 @@ namespace LEGO {
                             for (int n_direction = 0; n_direction < 4; n_direction++) {
                                 try {
                                     int[][] bounds = brick.GetBounds();
-                                    // TODO: Check if bounds are same as another
+
                                     if (brick.Facing == Direction.NORTH || brick.Facing == Direction.SOUTH) {
                                         result.AddBrick(Pieces[currentBrick], bounds[0][0] + studs[n_stud] % brick.Dimensions[0], bounds[0][1] + studs[n_stud] / brick.Dimensions[0], brick.Position[2] + 2 * n_face - 1, (Direction)directions[n_direction]);
                                     } else {
@@ -380,9 +406,9 @@ namespace LEGO {
             if (ResultStructure == null) throw new NullReferenceException();
             List<int[]> result = new List<int[]>();
 
-            foreach (Brick piece in ResultStructure.Pieces.OrderBy(x => x.BrickID)) {
-            //foreach (Brick piece in ResultStructure.Pieces.OrderBy(x => x.BrickColor)) {
-            int[] grid = new int[Dimensions[0] * Dimensions[1]];
+            //foreach (Brick piece in ResultStructure.Pieces.OrderBy(x => x.BrickID)) { // [OLD VERSION]
+            foreach (Brick piece in ResultStructure.Pieces.OrderBy(x => x.BrickColor)) {
+                int[] grid = new int[Dimensions[0] * Dimensions[1]];
                 int[][] pieceBounds = piece.GetBounds();
                 int minX = pieceBounds[0][0];
                 int minY = pieceBounds[0][1];

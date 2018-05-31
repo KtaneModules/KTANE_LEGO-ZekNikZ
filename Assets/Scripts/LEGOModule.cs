@@ -84,7 +84,8 @@ public class LEGOModule : MonoBehaviour {
         SubmitButton.OnInteract += delegate { HandleSubmit(); return false; };
 
         // Puzzle and Solution Generator
-        StructureGenerator gen = new StructureGenerator(10, new int[] { 8, 8, 8 });
+        // StructureGenerator gen = new StructureGenerator(10, new int[] { 8, 8, 8 }); // [OLD VERSION]
+        StructureGenerator gen = new StructureGenerator(6, new int[] { 8, 8, 8 });
         SolutionStructure = gen.Generate();
         SolutionPieceDisplays = gen.GetPieceDisplays(true);
         for (int i = 0; i < SolutionStructure.Pieces.Count; i++) { 
@@ -124,14 +125,24 @@ public class LEGOModule : MonoBehaviour {
 
         // Setup Solution
         Brick yellowPiece = SolutionStructure.Pieces.Find(x => x.BrickColor == 5);
+        /* [OLD VERSION]
         SolutionFace = SolutionStructure.Pieces.Count(x => x.Dimensions[0] * x.Dimensions[1] == 6) >= 5 ? 1 :
                        yellowPiece.Dimensions[0] * yellowPiece.Dimensions[1] == 3 ? 0 :
-                       SolutionManualPages.Count > 9 ? 1 : 0;
+                       SolutionManualPages.Count >= 10 ? 1 : 0;
+        */
+        SolutionFace = SolutionStructure.Pieces.Count(x => x.Dimensions[0] * x.Dimensions[1] == 6) >= 3 ? 1 :
+                       yellowPiece.Dimensions[0] * yellowPiece.Dimensions[1] == 3 ? 0 :
+                       SolutionManualPages.Count >= 7 ? 1 : 0;
         Debug.LogFormat("[LEGO #{0}] Solution Face: {1}", ModuleID, SolutionFace == 0 ? "BOTTOM" : "TOP");
         if (SOLUTION_TRANSFORMATIONS_ENABLED) {
+            /* [OLD VERSION]
             SolutionRotation = SolutionStructure.Pieces.Find(x => x.BrickColor == 1).Dimensions.SequenceEqual(SolutionStructure.Pieces.Find(x => x.BrickColor == 4).Dimensions) ? Direction.WEST :
                                SolutionStructure.Pieces.Max(x => x.Position[2]) > 2 ? Direction.NORTH :
                                SolutionStructure.Pieces.Find(x => x.BrickColor == 6).Position[2] > SolutionStructure.Pieces.Find(x => x.BrickColor == 0).Position[2] ? Direction.EAST : Direction.SOUTH;
+            */
+            SolutionRotation = SolutionStructure.Pieces.Find(x => x.BrickColor == 1).Dimensions.SequenceEqual(SolutionStructure.Pieces.Find(x => x.BrickColor == 4).Dimensions) ? Direction.WEST :
+                   SolutionStructure.Pieces.Max(x => x.Position[2]) > 2 ? Direction.NORTH :
+                   SolutionStructure.Pieces.Find(x => x.BrickColor == 2).Position[2] > SolutionStructure.Pieces.Find(x => x.BrickColor == 0).Position[2] ? Direction.EAST : Direction.SOUTH;
             Debug.LogFormat("[LEGO #{0}] Solution Rotation: {1}", ModuleID, SolutionRotation);
         } else {
             SolutionRotation = Direction.NORTH;
@@ -154,7 +165,8 @@ public class LEGOModule : MonoBehaviour {
     }
 
     private void ActivateModule() {
-        HandleColorPress(Random.Range(0,10));
+        // HandleColorPress(Random.Range(0, 10)); // [OLD VERSION]
+        HandleColorPress(Random.Range(0, 6));
     }
 
     // Interaction Handlers
